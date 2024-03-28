@@ -1,2 +1,2 @@
 # menu_app
-restaurant flask application with docker container
+restaurant menu application with docker container. Developed with flask
