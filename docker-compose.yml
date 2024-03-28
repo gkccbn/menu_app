@@ -4,9 +4,9 @@ services:
   flask_app:
     container_name: flask_app
     image: flask-app:0.1
-    # build:
-      # context: .
-      # network: host
+    build:
+       context: .
+       network: host
     ports:
       - "5000:5000"
     environment:
