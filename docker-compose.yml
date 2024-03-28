@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  flask_app:
+    container_name: flask_app
+    image: flask-app:0.1
+    # build:
+      # context: .
+      # network: host
+    ports:
+      - "5000:5000"
+    environment:
+      IS_PROD: 1
+      POSTGRES_HOST: "flask_db"
+      POSTGRES_DB: "menu_app"
+      POSTGRES_USERNAME: "postgres"
+      POSTGRES_PASSWORD: "a"
+    depends_on:
+      - flask_db
+    networks:
+      - flask_network 
+  flask_db:
+    container_name: flask_db
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=a
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=menu_app
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      #- ./db.sql:/docker-entrypoint-initdb.d/db.sql
+    networks:
+      - flask_network
+  flask_admin:
+        image: elestio/pgadmin:REL-8_2
+        restart: on-failure
+        environment:
+          PGADMIN_DEFAULT_EMAIL: johndoe@gmail.com
+          PGADMIN_DEFAULT_PASSWORD: "1234"
+          PGADMIN_LISTEN_PORT: 8080
+        ports:
+        - "8082:8080"
+        volumes:
+        - ./servers.json:/pgadmin4/servers.json
+        networks:
+          - flask_network
+
+volumes:
+  pgdata: {}
+networks:
+  flask_network:
+    driver: bridge
+    name: flask_network
